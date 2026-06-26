@@ -62,7 +62,7 @@
     <div class="accent-bar"></div>
     <h2 class="section-title"><i class="fa-solid fa-heart"></i> Nos valeurs</h2>
     <div class="values-grid">
-      {% for value in site.values %}
+      {% for value in site["values"] %}
       <div class="info-card">
         <div class="info-icon">{{ value.icon | safe }}</div>
         <h3>{{ value.title }}</h3>
