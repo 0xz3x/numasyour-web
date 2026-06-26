@@ -1,7 +1,14 @@
 from __future__ import annotations
 
+import copy
+import html
 import re
+import xml.etree.ElementTree as ET
+from datetime import datetime, timezone
+from email.utils import parsedate_to_datetime
 from pathlib import Path
+from urllib.error import URLError
+from urllib.request import urlopen
 
 from flask import Flask, flash, redirect, render_template, request, send_from_directory, url_for
 
@@ -9,6 +16,25 @@ from flask import Flask, flash, redirect, render_template, request, send_from_di
 app = Flask(__name__)
 app.secret_key = "numasyour-dev-secret"
 BASE_DIR = Path(__file__).resolve().parent
+CERT_FEED_URL = "https://www.cert.ssi.gouv.fr/feed/"
+CERT_FEED_CACHE_TTL_SECONDS = 3600
+
+MONTH_NAMES = {
+    1: "janvier",
+    2: "février",
+    3: "mars",
+    4: "avril",
+    5: "mai",
+    6: "juin",
+    7: "juillet",
+    8: "août",
+    9: "septembre",
+    10: "octobre",
+    11: "novembre",
+    12: "décembre",
+}
+
+CERT_FEED_CACHE: dict[str, object] = {"fetched_at": None, "articles": None}
 
 
 @app.route("/css/<path:filename>")
@@ -217,6 +243,117 @@ SITE = {
 }
 
 
+def format_french_date(date_value: datetime) -> str:
+    return f"{date_value.day} {MONTH_NAMES[date_value.month]} {date_value.year}"
+
+
+def normalize_text(value: str) -> str:
+    return re.sub(r"\s+", " ", html.unescape(value)).strip()
+
+
+def strip_html(value: str) -> str:
+    return re.sub(r"<[^>]+>", "", value)
+
+
+def parse_feed_datetime(value: str | None) -> datetime:
+    if not value:
+        return datetime.now(timezone.utc)
+
+    try:
+        parsed_value = parsedate_to_datetime(value)
+    except (TypeError, ValueError):
+        return datetime.now(timezone.utc)
+
+    if parsed_value.tzinfo is None:
+        return parsed_value.replace(tzinfo=timezone.utc)
+
+    return parsed_value
+
+
+def classify_cert_item(link: str) -> dict[str, str]:
+    if "/alerte/" in link:
+        return {"tag": "Critique", "tag_class": "critical", "subject": "audit", "action_label": "Vérifier votre exposition"}
+
+    if "/avis/" in link:
+        return {"tag": "Important", "tag_class": "warning", "subject": "supervision", "action_label": "Planifier les correctifs"}
+
+    if "/actualite/" in link:
+        return {"tag": "Information", "tag_class": "info", "subject": "conseil", "action_label": "Structurer un plan d'action"}
+
+    if "/dur/" in link:
+        return {"tag": "Information", "tag_class": "info", "subject": "conseil", "action_label": "Structurer un plan d'action"}
+
+    return {"tag": "Information", "tag_class": "info", "subject": "conseil", "action_label": "En savoir plus"}
+
+
+def build_cert_article(item: ET.Element) -> dict[str, str | datetime]:
+    title = normalize_text(item.findtext("title", default=""))
+    link = normalize_text(item.findtext("link", default=""))
+    description = normalize_text(strip_html(item.findtext("description", default="")))
+    published_at = parse_feed_datetime(item.findtext("pubDate"))
+    classification = classify_cert_item(link)
+
+    title = re.sub(r"\s*\((?:\d{1,2}\s+[a-zéûîôàèùç]+\s+\d{4})\)$", "", title, flags=re.IGNORECASE)
+
+    return {
+        "tag": classification["tag"],
+        "tag_class": classification["tag_class"],
+        "date": format_french_date(published_at),
+        "title": title,
+        "desc": description,
+        "source": "CERT-FR",
+        "subject": classification["subject"],
+        "action_label": classification["action_label"],
+        "published_at": published_at,
+    }
+
+
+def fallback_cert_articles() -> list[dict[str, str]]:
+    return list(SITE["veille"]["articles"])
+
+
+def fetch_cert_articles() -> list[dict[str, str]]:
+    cached_articles = CERT_FEED_CACHE["articles"]
+    cached_at = CERT_FEED_CACHE["fetched_at"]
+    now = datetime.now(timezone.utc)
+
+    if cached_articles is not None and cached_at is not None:
+        if (now - cached_at).total_seconds() < CERT_FEED_CACHE_TTL_SECONDS:
+            return list(cached_articles)
+
+    try:
+        with urlopen(CERT_FEED_URL, timeout=5) as response:
+            feed_xml = response.read()
+    except URLError:
+        return list(cached_articles) if cached_articles is not None else fallback_cert_articles()
+
+    try:
+        root = ET.fromstring(feed_xml)
+    except ET.ParseError:
+        return list(cached_articles) if cached_articles is not None else fallback_cert_articles()
+
+    channel = root.find("channel")
+    if channel is None:
+        return list(cached_articles) if cached_articles is not None else fallback_cert_articles()
+
+    articles = [build_cert_article(item) for item in channel.findall("item")]
+    articles.sort(key=lambda article: article["published_at"], reverse=True)
+
+    normalized_articles: list[dict[str, str]] = []
+    for article in articles[:6]:
+        normalized_articles.append({key: value for key, value in article.items() if key != "published_at"})
+
+    CERT_FEED_CACHE["articles"] = normalized_articles
+    CERT_FEED_CACHE["fetched_at"] = now
+    return list(normalized_articles)
+
+
+def site_data() -> dict[str, object]:
+    site = copy.deepcopy(SITE)
+    site["veille"]["articles"] = fetch_cert_articles()
+    return site
+
+
 def service_menu_items(active_slug: str | None = None) -> list[dict[str, object]]:
     return [
         {
@@ -232,7 +369,7 @@ def service_menu_items(active_slug: str | None = None) -> list[dict[str, object]
 
 @app.context_processor
 def inject_site() -> dict[str, object]:
-    return {"site": SITE, "service_menu": service_menu_items()}
+    return {"site": site_data(), "service_menu": service_menu_items()}
 
 
 @app.route("/")
