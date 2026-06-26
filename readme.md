@@ -49,6 +49,23 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
+## Déploiement dans `/var/www`
+
+Si le projet n'est pas déjà dans `/var/www`, déplacer le dossier du dépôt vers le chemin final utilisé par le service:
+
+```bash
+sudo systemctl stop numasyour
+sudo rm -rf /var/www/numasyour-web
+sudo mv ~/numasyour-web /var/www/numasyour-web
+sudo chown -R www-data:www-data /var/www/numasyour-web
+```
+
+Si tu veux garder un backup de l'ancien répertoire avant suppression, remplace la ligne `rm -rf` par un renommage:
+
+```bash
+sudo mv /var/www/numasyour-web /var/www/numasyour-web.backup
+```
+
 ## Lancement en local
 
 ```bash
@@ -77,9 +94,9 @@ After=network.target
 [Service]
 User=www-data
 Group=www-data
-WorkingDirectory=/var/www/numasyour
-Environment="PATH=/var/www/numasyour/.venv/bin"
-ExecStart=/var/www/numasyour/.venv/bin/gunicorn --workers 3 --bind 127.0.0.1:8000 wsgi:app
+WorkingDirectory=/var/www/numasyour-web
+Environment="PATH=/var/www/numasyour-web/.venv/bin"
+ExecStart=/var/www/numasyour-web/.venv/bin/python -m gunicorn --workers 3 --bind 127.0.0.1:8000 wsgi:app
 Restart=always
 
 [Install]
