@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="{{ url_for('index') }}">Accueil</a> / <a href="{{ url_for('index') }}#services">Services</a> / <span>{{ service_plain_title }}</span></div>
+    <h1>{{ service.page_title | safe }}</h1>
+    <p>{{ service.page_desc }}</p>
+  </div>
+</section>
+
+<section class="service-detail">
+  <div class="container">
+    <div class="service-detail-grid">
+      <div class="prestations-list">
+        {% for item in service.prestations %}
+        <div class="prestation-card">
+          <div class="service-icon">{{ item.icon | safe }}</div>
+          <h3>{{ item.title }}</h3>
+          <p>{{ item.desc }}</p>
+        </div>
+        {% endfor %}
+      </div>
+      <aside class="service-sidebar">
+        <div class="sidebar-card">
+          <h4>Nos services</h4>
+          <nav class="sidebar-nav">
+            {% for item in site.services %}
+            <a href="{{ url_for('service_detail', slug=item.slug) }}" class="{% if item.slug == service_slug %}active{% endif %}">{{ item.icon | safe }} {{ item.title }}</a>
+            {% endfor %}
+          </nav>
+        </div>
+        <div class="sidebar-cta">
+          <h4>{{ service.sidebar_title }}</h4>
+          <p>{{ service.sidebar_desc }}</p>
+          <a href="{{ url_for('contact') }}" class="btn btn-primary">{{ service.sidebar_cta }}</a>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section class="cta-banner">
+  <div class="container">
+    <h2>{{ service.cta_title }}</h2>
+    <p>{{ service.cta_desc }}</p>
+    <div class="cta-buttons">
+      <a href="{{ url_for('contact') }}" class="btn btn-primary">Nous contacter</a>
+      <a href="tel:{{ site.phone_full }}" class="btn btn-outline">{{ site.phone }}</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

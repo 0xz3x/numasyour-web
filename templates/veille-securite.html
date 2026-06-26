@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="{{ url_for('index') }}">Accueil</a> / <span>Veille Sécurité</span></div>
+    <h1>{{ site.veille.page_title | safe }}</h1>
+    <p>{{ site.veille.page_desc }}</p>
+  </div>
+</section>
+
+<section class="veille-section">
+  <div class="container">
+    <div class="veille-intro">
+      <p>Notre veille sécurité s'appuie sur les bulletins <strong>CERT-FR</strong>, <strong>ANSSI</strong> et les éditeurs référents. Nous vous partageons ici les alertes critiques récentes et nos recommandations.</p>
+    </div>
+    <h2 class="section-title" style="text-align:left; margin-bottom: 18px;">{{ site.veille.section_title }}</h2>
+    <p class="section-subtitle" style="text-align:left; margin-left:0; margin-bottom: 28px;">{{ site.veille.section_subtitle }}</p>
+    <div class="veille-grid">
+      {% for article in site.veille.articles %}
+      <div class="veille-card">
+        <div class="veille-meta">
+          <span class="tag {{ article.tag_class }}">{{ article.tag }}</span>
+          <span>{{ article.date }}</span>
+        </div>
+        <h3>{{ article.title }}</h3>
+        <p>{{ article.desc }}</p>
+        <div class="veille-source">Source: {{ article.source }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="cta-banner">
+  <div class="container">
+    <h2>{{ site.veille.cta_title }}</h2>
+    <p>{{ site.veille.cta_desc }}</p>
+    <div class="cta-buttons">
+      <a href="{{ url_for('contact') }}" class="btn btn-primary">Demander un audit</a>
+      <a href="tel:{{ site.phone_full }}" class="btn btn-outline">{{ site.phone }}</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="{{ url_for('index') }}">Accueil</a> / <span>À propos</span></div>
+    <h1><i class="fa-solid fa-user"></i> À propos</h1>
+    <p>Découvrez le parcours et les valeurs qui animent NumAsYouR au quotidien.</p>
+  </div>
+</section>
+
+<section class="section about-intro">
+  <div class="container">
+    <div class="accent-bar"></div>
+    <h2 class="section-title"><i class="fa-solid fa-quote-left"></i> Qui sommes-nous ?</h2>
+    <div class="about-content">
+      <div class="founder-card">
+        <div class="founder-card-icon"><i class="fa-solid fa-user-tie"></i></div>
+        <div class="founder-card-info">
+          <h3>{{ site.founder }}</h3>
+          <p>{{ site.founder_title }}</p>
+        </div>
+      </div>
+      <p>NumAsYouR accompagne les PME et TPE dans leur transformation numérique avec un socle d'expertise en infrastructure, cybersécurité, supervision et gestion de projet IT.</p>
+      <p>Avec plus de 15 ans d'expérience terrain, l'approche privilégie la proximité, la clarté et des solutions concrètes adaptées au contexte de chaque entreprise.</p>
+      <p>Formation: Master en Management des Systèmes d'Information. Les outils open source et les architectures robustes sont au cœur de la démarche.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section timeline-section">
+  <div class="container">
+    <div class="accent-bar"></div>
+    <h2 class="section-title"><i class="fa-solid fa-clock-rotate-left"></i> Parcours professionnel</h2>
+    <div class="timeline">
+      {% for item in site.timeline %}
+      <div class="timeline-item">
+        <div class="timeline-year">{{ item.years }}</div>
+        <div class="timeline-content">
+          <h3>{{ item.title }}</h3>
+          <p>{{ item.desc }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section skills-section">
+  <div class="container">
+    <div class="accent-bar"></div>
+    <h2 class="section-title"><i class="fa-solid fa-toolbox"></i> Compétences & Technologies</h2>
+    <div class="skills-grid">
+      {% for skill in site.skills %}
+      <div class="skill-pill">{{ skill.icon | safe }} <span>{{ skill.name }}</span></div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section values-section">
+  <div class="container">
+    <div class="accent-bar"></div>
+    <h2 class="section-title"><i class="fa-solid fa-heart"></i> Nos valeurs</h2>
+    <div class="values-grid">
+      {% for value in site.values %}
+      <div class="info-card">
+        <div class="info-icon">{{ value.icon | safe }}</div>
+        <h3>{{ value.title }}</h3>
+        <p>{{ value.desc }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="cta-banner">
+  <div class="container">
+    <h2>{{ site.cta.title }}</h2>
+    <p>{{ site.cta.desc }}</p>
+    <div class="cta-buttons">
+      <a href="{{ url_for('contact') }}" class="btn btn-primary">{{ site.cta.cta1 }}</a>
+      <a href="tel:{{ site.phone_full }}" class="btn btn-outline">{{ site.cta.cta2 | safe }}</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

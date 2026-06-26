@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="{{ url_for('index') }}">Accueil</a> / <span>Mentions légales</span></div>
+    <h1><i class="fa-solid fa-scroll"></i> Mentions Légales</h1>
+    <p>Informations légales, politique de confidentialité et gestion des cookies.</p>
+  </div>
+</section>
+
+<section class="legal-section">
+  <div class="container">
+    <div class="legal-content">
+      <h2>1. Éditeur du site</h2>
+      <p><strong>{{ site.company }}</strong> — Conseil indépendant en systèmes et réseaux informatiques</p>
+      <ul>
+        <li><strong>Dirigeant :</strong> {{ site.founder }}</li>
+        <li><strong>SIREN :</strong> 904 315 074</li>
+        <li><strong>Siège :</strong> {{ site.address }}</li>
+        <li><strong>Téléphone :</strong> {{ site.phone }}</li>
+        <li><strong>Email :</strong> {{ site.email }}</li>
+      </ul>
+
+      <h2>2. Hébergement</h2>
+      <p>Le site est hébergé par: [à compléter selon votre hébergeur]</p>
+
+      <h2>3. Propriété intellectuelle</h2>
+      <p>L'ensemble des contenus présents sur ce site est la propriété exclusive de NumAsYouR ou de ses partenaires.</p>
+
+      <h2 id="confidentialite">4. Politique de confidentialité (RGPD)</h2>
+      <p>Conformément au RGPD et à la loi Informatique et Libertés, NumAsYouR s'engage à protéger vos données personnelles.</p>
+      <h3>Données collectées</h3>
+      <ul>
+        <li>Formulaire de contact: nom, email, téléphone, entreprise, message</li>
+        <li>Cookies de navigation</li>
+      </ul>
+      <h3>Finalités</h3>
+      <ul>
+        <li>Répondre à vos demandes de contact et de devis</li>
+        <li>Améliorer l'expérience de navigation</li>
+      </ul>
+      <h3>Conservation</h3>
+      <p>Les données du formulaire de contact sont conservées 12 mois maximum, sauf obligation légale contraire.</p>
+      <h3>Vos droits</h3>
+      <p>Vous disposez d'un droit d'accès, de rectification, de suppression, de portabilité et d'opposition. Pour exercer ces droits, contactez-nous à <strong>{{ site.email }}</strong>.</p>
+
+      <h2 id="cookies">5. Cookies</h2>
+      <p>Ce site utilise des cookies strictement nécessaires à son fonctionnement. Aucun cookie de tracking publicitaire n'est déposé.</p>
+      <table class="legal-table">
+        <thead><tr><th>Cookie</th><th>Finalité</th><th>Durée</th></tr></thead>
+        <tbody>
+          <tr><td>cookie_consent</td><td>Mémorise votre choix cookies</td><td>12 mois</td></tr>
+        </tbody>
+      </table>
+
+      <h2>6. Responsabilité</h2>
+      <p>NumAsYouR s'efforce de fournir des informations à jour et exactes. Toutefois, nous ne pouvons garantir l'exhaustivité ni l'absence d'erreurs.</p>
+
+      <h2>7. Liens externes</h2>
+      <p>Le site peut contenir des liens vers des sites tiers. NumAsYouR n'assume aucune responsabilité quant au contenu de ces sites externes.</p>
+
+      <h2>8. Droit applicable</h2>
+      <p>Le présent site et ses mentions légales sont régis par le droit français.</p>
+    </div>
+  </div>
+</section>
+{% endblock %}

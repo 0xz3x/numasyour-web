@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-badge">{{ site.hero.badge | safe }}</div>
+      <h1>{{ site.hero.title | safe }}</h1>
+      <p class="hero-description">{{ site.hero.description }}</p>
+      <div class="hero-buttons">
+        <a href="#services" class="btn btn-primary">{{ site.hero.cta1 }}</a>
+        <a href="{{ url_for('contact') }}" class="btn btn-outline">{{ site.hero.cta2 }}</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-illustration">
+        <div class="grid-pattern"></div>
+        <div class="hero-stats">
+          {% for stat in site.hero_stats %}
+          <div class="hero-stat">
+            <strong class="stat-number">{{ stat.number }}</strong>
+            <span class="stat-label">{{ stat.label }}</span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="key-figures">
+  <div class="container">
+    <div class="figures-grid">
+      {% for figure in site.figures %}
+      <div class="figure-card">
+        <div class="figure-icon">{{ figure.icon | safe }}</div>
+        <div class="counter" data-target="{{ figure.count }}" data-suffix="{{ figure.suffix }}">0{{ figure.suffix }}</div>
+        <div>{{ figure.label }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="services section" id="services">
+  <div class="container">
+    <div class="accent-bar"></div>
+    <h2 class="section-title">{{ site.services_intro.title }}</h2>
+    <p class="section-subtitle">{{ site.services_intro.subtitle }}</p>
+    <div class="services-grid">
+      {% for service in site.services %}
+      <a href="{{ url_for('service_detail', slug=service.slug) }}" class="service-card">
+        <div class="service-icon">{{ service.icon | safe }}</div>
+        <h3>{{ service.title }}</h3>
+        <p>{{ service.desc }}</p>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="why-section section">
+  <div class="container">
+    <div class="accent-bar"></div>
+    <h2 class="section-title">{{ site.why.title }}</h2>
+    <p class="section-subtitle">{{ site.why.subtitle }}</p>
+    <div class="why-grid">
+      {% for card in site.why.cards %}
+      <div class="info-card">
+        <div class="info-icon">{{ card.icon | safe }}</div>
+        <h3>{{ card.title }}</h3>
+        <p>{{ card.desc }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="cta-banner">
+  <div class="container">
+    <h2>{{ site.cta.title }}</h2>
+    <p>{{ site.cta.desc }}</p>
+    <div class="cta-buttons">
+      <a href="{{ url_for('contact') }}" class="btn btn-primary">{{ site.cta.cta1 }}</a>
+      <a href="tel:{{ site.phone_full }}" class="btn btn-outline">{{ site.cta.cta2 | safe }}</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

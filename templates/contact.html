@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="{{ url_for('index') }}">Accueil</a> / <span>Contact</span></div>
+    <h1><i class="fa-solid fa-phone"></i> Contactez-nous</h1>
+    <p>{{ site.contact.page_desc }}</p>
+  </div>
+</section>
+
+<section class="contact-section">
+  <div class="container">
+    <div class="contact-grid">
+      <div class="contact-form">
+        <h2>{{ site.contact.form_title }}</h2>
+        <p>{{ site.contact.form_subtitle }}</p>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+          <div class="form-message-stack">
+            {% for category, message in messages %}
+            <div class="form-message {{ category }}">{{ message }}</div>
+            {% endfor %}
+          </div>
+          {% endif %}
+        {% endwith %}
+        <form method="post" action="{{ url_for('contact') }}" id="contact-form">
+          <div class="form-row">
+            <div class="form-group"><label for="name">Nom complet *</label><input type="text" id="name" name="name" value="{{ form_data.name }}" placeholder="Votre nom" required></div>
+            <div class="form-group"><label for="email">Email *</label><input type="email" id="email" name="email" value="{{ form_data.email }}" placeholder="votre@email.com" required></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label for="phone">Téléphone</label><input type="tel" id="phone" name="phone" value="{{ form_data.phone }}" placeholder="02 XX XX XX XX"></div>
+            <div class="form-group"><label for="company">Entreprise</label><input type="text" id="company" name="company" value="{{ form_data.company }}" placeholder="Nom de votre entreprise"></div>
+          </div>
+          <div class="form-group">
+            <label for="subject">Objet *</label>
+            <select id="subject" name="subject" required>
+              <option value="" disabled {% if not form_data.subject %}selected{% endif %}>Choisissez un sujet</option>
+              {% for subject in site.contact.subjects %}
+              <option value="{{ subject.value }}" {% if form_data.subject == subject.value %}selected{% endif %}>{{ subject.label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group"><label for="message">Message *</label><textarea id="message" name="message" placeholder="Décrivez votre projet ou votre besoin..." required>{{ form_data.message }}</textarea></div>
+          <div class="form-submit"><button type="submit" class="btn btn-primary">{{ site.contact.submit_btn }}</button></div>
+        </form>
+      </div>
+
+      <div class="contact-info">
+        <div class="contact-info-card"><div class="contact-info-icon"><i class="fa-solid fa-location-dot"></i></div><div><h3>Localisation</h3><p>{{ site.address }}</p></div></div>
+        <div class="contact-info-card"><div class="contact-info-icon"><i class="fa-solid fa-phone"></i></div><div><h3>Téléphone</h3><a href="tel:{{ site.phone_full }}">{{ site.phone }}</a></div></div>
+        <div class="contact-info-card"><div class="contact-info-icon"><i class="fa-solid fa-envelope"></i></div><div><h3>Email</h3><a href="mailto:{{ site.email }}">{{ site.email }}</a></div></div>
+        <div class="contact-info-card"><div class="contact-info-icon"><i class="fa-brands fa-linkedin"></i></div><div><h3>LinkedIn</h3><a href="{{ site.linkedin }}" target="_blank" rel="noopener noreferrer">Profil LinkedIn de Xavier Pietin</a></div></div>
+        <div class="contact-info-card"><div class="contact-info-icon"><i class="fa-solid fa-clock"></i></div><div><h3>Horaires</h3><p>{{ site.hours }}</p></div></div>
+        <div class="contact-map"><iframe src="https://www.openstreetmap.org/export/embed.html?bbox=-2.42%2C47.50%2C-2.30%2C47.55&amp;layer=mapnik&amp;marker=47.525%2C-2.36" loading="lazy" title="Localisation NumAsYouR - Marzan, Bretagne" referrerpolicy="no-referrer"></iframe></div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
