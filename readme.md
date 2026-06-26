@@ -25,8 +25,8 @@ Les anciennes pages HTML statiques et les anciens scripts d'injection ont été 
 ## Installation
 
 ```bash
-git clone <votre-depot>
-cd site-web
+git clone https://github.com/0xz3x/numasyour-web.git
+cd numasyour-web
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
