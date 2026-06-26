@@ -17,10 +17,27 @@ Les anciennes pages HTML statiques et les anciens scripts d'injection ont été 
 
 ## Prérequis
 
+- Un serveur Linux Debian/Ubuntu ou compatible
 - Python 3.11 ou supérieur
 - `pip`
 - `gunicorn`
 - `systemd` et un reverse proxy Linux comme `nginx`
+
+## Installation de Python sur Linux
+
+Sur un serveur Debian/Ubuntu vierge, installer Python et les outils nécessaires:
+
+```bash
+sudo apt update
+sudo apt install -y python3 python3-venv python3-pip nginx
+```
+
+Vérifier ensuite les versions installées:
+
+```bash
+python3 --version
+pip3 --version
+```
 
 ## Installation
 
