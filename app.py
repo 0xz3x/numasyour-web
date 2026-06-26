@@ -387,7 +387,7 @@ def about():
     return render_template(
         "a-propos.html",
         active_page="about",
-        page_title="À propos — NumAsYouR",
+        page_title="Qui sommes-nous ? — NumAsYouR",
         page_description="Découvrez le parcours et les valeurs qui animent NumAsYouR au quotidien.",
     )
 
