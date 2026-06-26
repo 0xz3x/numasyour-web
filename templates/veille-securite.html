@@ -10,21 +10,28 @@
 
 <section class="veille-section">
   <div class="container">
-    <div class="veille-intro">
-      <p>Notre veille sécurité s'appuie sur les bulletins <strong>CERT-FR</strong>, <strong>ANSSI</strong> et les éditeurs référents. Nous vous partageons ici les alertes critiques récentes et nos recommandations.</p>
+    <div class="veille-intro-card">
+      <div class="veille-intro-icon"><i class="fa-solid fa-shield-halved"></i></div>
+      <div>
+        <h2>{{ site.veille.section_title }}</h2>
+        <p>{{ site.veille.section_subtitle }}</p>
+      </div>
     </div>
-    <h2 class="section-title" style="text-align:left; margin-bottom: 18px;">{{ site.veille.section_title }}</h2>
-    <p class="section-subtitle" style="text-align:left; margin-left:0; margin-bottom: 28px;">{{ site.veille.section_subtitle }}</p>
     <div class="veille-grid">
       {% for article in site.veille.articles %}
       <div class="veille-card">
-        <div class="veille-meta">
-          <span class="tag {{ article.tag_class }}">{{ article.tag }}</span>
-          <span>{{ article.date }}</span>
+        <div class="veille-card-header">
+          <span class="veille-card-tag {{ article.tag_class }}">{{ article.tag }}</span>
+          <span class="veille-card-date">{{ article.date }}</span>
         </div>
-        <h3>{{ article.title }}</h3>
-        <p>{{ article.desc }}</p>
-        <div class="veille-source">Source: {{ article.source }}</div>
+        <div class="veille-card-body">
+          <h3>{{ article.title }}</h3>
+          <p>{{ article.desc }}</p>
+          <div class="veille-card-footer">
+            <div class="veille-source">Source: {{ article.source }}</div>
+            <a class="veille-card-link" href="{{ url_for('contact') }}?subject={{ article.subject }}#contact-form">{{ article.action_label }}</a>
+          </div>
+        </div>
       </div>
       {% endfor %}
     </div>

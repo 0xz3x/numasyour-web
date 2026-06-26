@@ -206,12 +206,12 @@ SITE = {
         "cta_title": "Protégez votre entreprise",
         "cta_desc": "Besoin d'un audit de sécurité ou d'une solution de surveillance ? Contactez-nous pour un premier échange gratuit.",
         "articles": [
-            {"tag": "Critique", "tag_class": "critical", "date": "28 mars 2026", "title": "Vulnérabilité critique dans OpenSSL 3.x", "desc": "Une faille de type buffer overflow a été identifiée dans OpenSSL 3.x permettant une exécution de code à distance. Mise à jour recommandée immédiatement.", "source": "CERT-FR"},
-            {"tag": "Important", "tag_class": "warning", "date": "25 mars 2026", "title": "Campagne de phishing ciblant les PME françaises", "desc": "L'ANSSI alerte sur une vague de phishing sophistiqué usurpant l'identité de fournisseurs courants. Vigilance accrue recommandée sur les emails entrants.", "source": "ANSSI"},
-            {"tag": "Critique", "tag_class": "critical", "date": "20 mars 2026", "title": "Mise à jour de sécurité Windows Server — mars 2026", "desc": "Microsoft publie un correctif pour plusieurs vulnérabilités critiques affectant Windows Server 2019/2022, dont une élévation de privilèges Active Directory.", "source": "Microsoft MSRC"},
-            {"tag": "Information", "tag_class": "info", "date": "18 mars 2026", "title": "Guide ANSSI : sécuriser son infrastructure Active Directory", "desc": "L'ANSSI publie un guide actualisé des bonnes pratiques pour sécuriser Active Directory : durcissement, surveillance et gestion des comptes à privilèges.", "source": "ANSSI"},
-            {"tag": "Important", "tag_class": "warning", "date": "15 mars 2026", "title": "Vulnérabilité Zabbix Server — exécution de code", "desc": "Une vulnérabilité permettant une exécution de code à distance a été identifiée dans Zabbix Server 6.x. La mise à jour vers la dernière version est fortement recommandée.", "source": "CVE / Zabbix"},
-            {"tag": "Information", "tag_class": "info", "date": "10 mars 2026", "title": "Recommandations pour la sauvegarde 3-2-1-1-0", "desc": "Retour sur la règle 3-2-1-1-0 pour des sauvegardes résilientes : 3 copies, 2 types de supports, 1 hors site, 1 immuable, 0 erreur de restauration.", "source": "NumAsYouR"},
+            {"tag": "Critique", "tag_class": "critical", "date": "28 mars 2026", "title": "Vulnérabilité critique dans OpenSSL 3.x", "desc": "Une faille de type buffer overflow a été identifiée dans OpenSSL 3.x permettant une exécution de code à distance. Mise à jour recommandée immédiatement.", "source": "CERT-FR", "subject": "audit", "action_label": "Vérifier votre exposition"},
+            {"tag": "Important", "tag_class": "warning", "date": "25 mars 2026", "title": "Campagne de phishing ciblant les PME françaises", "desc": "L'ANSSI alerte sur une vague de phishing sophistiqué usurpant l'identité de fournisseurs courants. Vigilance accrue recommandée sur les emails entrants.", "source": "ANSSI", "subject": "conseil", "action_label": "Renforcer la prévention"},
+            {"tag": "Critique", "tag_class": "critical", "date": "20 mars 2026", "title": "Mise à jour de sécurité Windows Server — mars 2026", "desc": "Microsoft publie un correctif pour plusieurs vulnérabilités critiques affectant Windows Server 2019/2022, dont une élévation de privilèges Active Directory.", "source": "Microsoft MSRC", "subject": "supervision", "action_label": "Planifier les correctifs"},
+            {"tag": "Information", "tag_class": "info", "date": "18 mars 2026", "title": "Guide ANSSI : sécuriser son infrastructure Active Directory", "desc": "L'ANSSI publie un guide actualisé des bonnes pratiques pour sécuriser Active Directory : durcissement, surveillance et gestion des comptes à privilèges.", "source": "ANSSI", "subject": "conseil", "action_label": "Structurer un plan d'action"},
+            {"tag": "Important", "tag_class": "warning", "date": "15 mars 2026", "title": "Vulnérabilité Zabbix Server — exécution de code", "desc": "Une vulnérabilité permettant une exécution de code à distance a été identifiée dans Zabbix Server 6.x. La mise à jour vers la dernière version est fortement recommandée.", "source": "CVE / Zabbix", "subject": "supervision", "action_label": "Auditer le monitoring"},
+            {"tag": "Information", "tag_class": "info", "date": "10 mars 2026", "title": "Recommandations pour la sauvegarde 3-2-1-1-0", "desc": "Retour sur la règle 3-2-1-1-0 pour des sauvegardes résilientes : 3 copies, 2 types de supports, 1 hors site, 1 immuable, 0 erreur de restauration.", "source": "NumAsYouR", "subject": "conseil", "action_label": "Définir une stratégie"},
         ],
     },
 }
@@ -278,6 +278,11 @@ def mentions_legales():
 @app.route("/contact", methods=["GET", "POST"])
 def contact():
     form_data = {"name": "", "email": "", "phone": "", "company": "", "subject": "", "message": ""}
+    if request.method == "GET":
+        subject = request.args.get("subject", "").strip()
+        valid_subjects = {item["value"] for item in SITE["contact"]["subjects"]}
+        if subject in valid_subjects:
+            form_data["subject"] = subject
     if request.method == "POST":
         form_data = {key: request.form.get(key, "").strip() for key in form_data}
 
